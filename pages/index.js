@@ -131,23 +131,6 @@ export default function Home() {
                         >
                           <i className="bi bi-link-45deg" />
                         </button>
-
-                        {address ? (
-                          <button>
-                            <Link
-                              href={`/transaction/${category.id}`}
-                              className="btn-get-started"
-                            >
-                              join
-                            </Link>
-                          </button>
-                        ) : (
-                          <button>
-                            <Link href="/login" className="btn-get-started">
-                              join
-                            </Link>
-                          </button>
-                        )}
                       </div>
                       <div className="user_information">
                         <ProgressBar

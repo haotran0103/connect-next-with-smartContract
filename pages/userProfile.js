@@ -9,40 +9,50 @@ import {
   useMetamask,
 } from "@thirdweb-dev/react";
 import moment from "moment";
+import Progress_bar from "../components/Progress_bar";
+
 export default function userProfile() {
   const connect = useMetamask();
   const address = useAddress();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading1, setIsLoading] = useState(false);
   const [campaigns, setCampaigns] = useState([]);
+  const [project, setproject] = useState([]);
   const { contract } = useContract(
     "0x82FDF3e77da5317cC6F797921DE147114F16bebc"
   );
-
-  const fetchCampaigns = async () => {
-    const { data, isLoading1, error } = useContractRead(
-      contract,
-      "getprojects"
-    );
-    setIsLoading(true);
-    const filteredCampaigns = data.filter((data) => data.owner === address);
-    setCampaigns(filteredCampaigns);
-    setIsLoading(false);
-  };
+  const { data, isLoading, error } = useContractRead(contract, "getprojects");
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+      setproject(data);
+    }
+  }, [data]);
 
   useEffect(() => {
-    if (contract) fetchCampaigns();
-  }, [address, contract]);
+    const fetchCampaigns = async () => {
+      console.log("aa", project);
+      if (project) {
+        const filteredCampaigns = project.filter(
+          (project) => project.owner === address
+        );
+        setCampaigns(filteredCampaigns);
+        console.log("aa", filteredCampaigns);
+        setIsLoading(false);
+      }
+    };
+    fetchCampaigns();
+  }, [project, address]);
 
+  console.log(campaigns.length);
   const galleryItems = [];
   for (let i = 0; i < campaigns.length; i++) {
-    console.log(accountAddress);
     const item = campaigns[i];
     galleryItems.push(
       <div className="col-xl-4 col-lg-4 col-md-6" key={item.id}>
         <div className="gallery-item h-100">
           <img
             style={{ width: 407, height: 432, objectFit: "cover" }}
-            src={item.anhBia}
+            src={item.image}
             className="img-fluid"
             alt={item.title}
           />
@@ -60,26 +70,23 @@ export default function userProfile() {
                 chi tiết
               </Link>
             </button>
-            <button>
-              <Link
-                style={{ color: "#858d8a", margin: "5px" }}
-                href={`/edit/${item.id}`}
-              >
-                edit
-              </Link>
-            </button>
           </div>
           <div className="user_information">
-            <progress
-              className="my_progress"
-              value={item.fundProgress}
-              max={100}
+            <Progress_bar
+              bgcolor="orange"
+              progress={Math.floor(
+                (item.donations.reduce((a, b) => a + b, 0) /
+                  item.target) *
+                  100
+              )}
+              height={20}
             />
-            <p>Tên dự án : {item.tenProject}</p>
-            <p>Số người đã ủng hộ: {item.supportersCount}</p>
+            <p>Tên dự án : {item.title}</p>
+            <p>Số người đã ủng hộ: {item.donators.length}</p>
             <p>
               Thời gian còn lại:{" "}
-              {moment(item.ngayHetHan, "YYYY-MM-DD").diff(moment(), "day")} ngày
+              {Math.floor((item.deadline - Date.now()) / (1000 * 60 * 60 * 24))}{" "}
+              ngày
             </p>
           </div>
         </div>
