@@ -41,10 +41,10 @@ const DetailProject = () => {
     "0x82FDF3e77da5317cC6F797921DE147114F16bebc"
   );
   const donationsArray = Array.of(donations);
-  const totalDonations = donationsArray.reduce(
-    (acc, cur) => acc.add(cur),
-    ethers.BigNumber.from("0")
-  );
+  const totalDonations = donationsArray
+    .map((donation) => donation.toString())
+    .reduce((acc, cur) => acc + cur, "0");
+  const progressPercentage = parseFloat(totalDonations).toFixed(3);
 
   const { mutateAsync: donateToproject, isLoading } = useContractWrite(
     contract,
@@ -157,14 +157,7 @@ const DetailProject = () => {
                   </li>
                   <li>
                     <strong>Số tiền đã huy động</strong>{" "}
-                    <span>
-                      {donations
-                        .reduce(
-                          (acc, cur) => acc.add(cur),
-                          ethers.BigNumber.from("0")
-                        )
-                        .toString()}
-                    </span>
+                    <span>{progressPercentage}</span>
                   </li>
                   <li>
                     <strong>Số người đóng góp</strong> <span>{donators}</span>
