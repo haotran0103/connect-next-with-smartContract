@@ -43,9 +43,7 @@ export default function arts() {
   const { data, isLoading } = useContractRead(contract, "getprojects");
   useEffect(() => {
     if (data) {
-      const techProjects = data.filter(
-        (project) => project.theLoai === "phim"
-      );
+      const techProjects = data.filter((project) => project.theLoai === "phim");
       setProjects(techProjects);
       console.log("aaaa", techProjects[0]);
     }
@@ -101,16 +99,12 @@ export default function arts() {
           <div className="container position-relative">
             <div className="row d-flex justify-content-center">
               <div className="col-lg-6 text-center">
-                <h2>Nghệ thuật</h2>
+                <h2>Phim</h2>
                 <p>
-                  Đề tài nghệ thuật là một chủ đề mà người ta thường khám phá và
-                  sáng tạo để tạo ra các tác phẩm có tính thẩm mỹ cao, bao gồm
-                  nhiều lĩnh vực như hội họa, điêu khắc, âm nhạc, vũ đạo và
-                  nhiếp ảnh. Nó có thể phản ánh tâm trạng, suy nghĩ, tư duy, hay
-                  đơn giản là thể hiện sự đam mê và khát khao của người sáng
-                  tác. Từ những tác phẩm nghệ thuật đa dạng này, ta có thể cảm
-                  nhận được sự đa dạng và sáng tạo của con người trong việc thể
-                  hiện nghệ thuật.
+                  Chúng tôi mang đến cho bạn không chỉ những bộ phim đầy kịch
+                  tính và hấp dẫn, mà còn mang đến những trải nghiệm cảm xúc
+                  đích thực. Chúng tôi cam kết đem đến cho bạn những câu chuyện
+                  đầy sức hút, đầy ý nghĩa và đầy cảm xúc.
                 </p>
                 <Link className="cta-btn" href="/create-project">
                   bắt đầu dự án đầu tiên

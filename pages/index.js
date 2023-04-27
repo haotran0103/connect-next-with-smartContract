@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Web3 from "web3";
 import moment from "moment";
+import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/Progress_bar";
@@ -136,7 +137,12 @@ export default function Home() {
                         <ProgressBar
                           bgcolor="orange"
                           progress={Math.floor(
-                            (category.donations.reduce((a, b) => a + b, 0) /
+                            (category.donations.reduce(
+                              (a, b) =>
+                                a +
+                                b,
+                              0
+                            ) /
                               category.target) *
                               100
                           )}

@@ -11,7 +11,6 @@ import React, { useState } from "react";
 const Header = () => {
   const [showNav, setShowNav] = useState(true);
   const [showMenuMobie, setShowMenuMobie] = useState(false);
-  const [accountAddress, setAccountAddress] = useState("");
   const connect = useMetamask();
   const address = useAddress();
 
@@ -77,7 +76,6 @@ const Header = () => {
             </li>
           </ul>
         </nav>
-        <div></div>
         {/* <i
           className={`mobile-nav-toggle ${
             showMenuMobie ? "bi bi-x" : "bi bi-list"

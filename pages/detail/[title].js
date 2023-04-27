@@ -67,7 +67,7 @@ const DetailProject = () => {
 
     setIsLoading(false);
   };
-
+  console.log("aaa", donations);
   useEffect(() => {
     setIsMounted(true);
   }, []);
