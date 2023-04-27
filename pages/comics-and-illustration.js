@@ -2,6 +2,7 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import ProgressBar from "../components/Progress_bar";
+import { useRouter } from "next/router";
 import moment from "moment";
 import {
   useContractRead,
@@ -13,39 +14,33 @@ export default function arts() {
   const [projects, setProjects] = useState([]);
   const connect = useMetamask();
   const address = useAddress();
+  const router = useRouter();
   const handleDetailsClick = (category, index) => {
-    console.log(category, index);
+    console.log("aaa", category, index);
     router.push({
-      pathname: `/detail/${category.title}`,
+      pathname: `/detailcate/${category.title}`,
       query: {
-        pId: index,
-        title: category.title,
-        description: category.description,
-        owner: category.owner,
-        loiHua: category.loiHua,
-        keHoach: category.keHoach,
-        theLoai: category.theLoai,
-        target: category.target,
-        deadline: Math.floor(
-          (category.deadline - Date.now()) / (1000 * 60 * 60 * 24)
-        ),
-        amountCollected: category.amountCollected,
-        image: category.image,
-        viddeo: category.viddeo,
-        donators: category.donators.reduce((a, b) => a + b, 0),
-        donations: category.donations.length,
+        category,
+        index,
       },
     });
   };
   const { contract } = useContract(
     "0x82FDF3e77da5317cC6F797921DE147114F16bebc"
   );
+  function findProjectIndex(project) {
+    const index = projects.findIndex((item) => item.title === project.title);
+    return index;
+  }
+
   const { data, isLoading } = useContractRead(contract, "getprojects");
   useEffect(() => {
     if (data) {
-      const techProjects = data.filter((project) => project.theLoai === "truyen");
+      const techProjects = data.filter(
+        (project) => project.theLoai === "truyen"
+      );
+      console.log(techProjects);
       setProjects(techProjects);
-      console.log("aaaa", techProjects[0]);
     }
   }, [data]);
 
@@ -81,10 +76,8 @@ export default function arts() {
             <p>Tên dự án: {item.tenProject}</p>
             <p>Số người đã ủng hộ: {item.supportersCount}</p>
             <p>
-              Thời gian còn lại: {Math.floor(
-                            (item.deadline - Date.now()) /
-                              (1000 * 60 * 60 * 24)
-                          )}
+              Thời gian còn lại:{" "}
+              {Math.floor((item.deadline - Date.now()) / (1000 * 60 * 60 * 24))}
             </p>
           </div>
         </div>
@@ -101,7 +94,10 @@ export default function arts() {
               <div className="col-lg-6 text-center">
                 <h2>Truyện và truyện tranh</h2>
                 <p>
-                Tựa như những cánh cửa đưa đến vô tận thế giới tưởng tượng, truyện và truyện tranh là hành trang đồng hành cùng bạn trên những cuộc phiêu lưu đầy màu sắc và khám phá những khía cạnh mới của cuộc sống
+                  Tựa như những cánh cửa đưa đến vô tận thế giới tưởng tượng,
+                  truyện và truyện tranh là hành trang đồng hành cùng bạn trên
+                  những cuộc phiêu lưu đầy màu sắc và khám phá những khía cạnh
+                  mới của cuộc sống
                 </p>
                 <Link className="cta-btn" href="/create-project">
                   bắt đầu dự án đầu tiên
@@ -152,10 +148,11 @@ export default function arts() {
                           <i className="bi bi-chevron-right" />{" "}
                           <strong>ngày còn lại:</strong>{" "}
                           <span>
-                          {Math.floor(
-                            (projects[0].deadline - Date.now()) /
-                              (1000 * 60 * 60 * 24)
-                          )} Ngày
+                            {Math.floor(
+                              (projects[0].deadline - Date.now()) /
+                                (1000 * 60 * 60 * 24)
+                            )}{" "}
+                            Ngày
                           </span>
                         </li>
                       </ul>
@@ -168,9 +165,16 @@ export default function arts() {
                   />
                   <p />
                   <p className="py-3"></p>
-                  <Link onClick={() => handleDetailsClick(projects[0], index)}>
-                    <h5>xem chi tiết</h5>
-                  </Link>
+                  <p
+                    onClick={() =>
+                      handleDetailsClick(
+                        projects[0],
+                        findProjectIndex(projects[0])
+                      )
+                    }
+                  >
+                    <h5 style={{ cursor: "pointer" }}>xem chi tiết</h5>
+                  </p>
                   <p />
                 </div>
               </div>

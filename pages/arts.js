@@ -2,6 +2,7 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import ProgressBar from "../components/Progress_bar";
+import { useRouter } from "next/router";
 import moment from "moment";
 import {
   useContractRead,
@@ -13,41 +14,33 @@ export default function arts() {
   const [projects, setProjects] = useState([]);
   const connect = useMetamask();
   const address = useAddress();
+  const router = useRouter();
   const handleDetailsClick = (category, index) => {
-    console.log(category, index);
+    console.log("aaa", category, index);
     router.push({
-      pathname: `/detail/${category.title}`,
+      pathname: `/detailcate/${category.title}`,
       query: {
-        pId: index,
-        title: category.title,
-        description: category.description,
-        owner: category.owner,
-        loiHua: category.loiHua,
-        keHoach: category.keHoach,
-        theLoai: category.theLoai,
-        target: category.target,
-        deadline: Math.floor(
-          (category.deadline - Date.now()) / (1000 * 60 * 60 * 24)
-        ),
-        amountCollected: category.amountCollected,
-        image: category.image,
-        viddeo: category.viddeo,
-        donators: category.donators.reduce((a, b) => a + b, 0),
-        donations: category.donations.length,
+        category,
+        index,
       },
     });
   };
   const { contract } = useContract(
     "0x82FDF3e77da5317cC6F797921DE147114F16bebc"
   );
+  function findProjectIndex(project) {
+    const index = projects.findIndex((item) => item.title === project.title);
+    return index;
+  }
+
   const { data, isLoading } = useContractRead(contract, "getprojects");
   useEffect(() => {
-    if (data) { 
+    if (data) {
       const techProjects = data.filter(
-        (project) => project.theLoai === "tech"
+        (project) => project.theLoai === "ngheThuat"
       );
+      console.log(techProjects);
       setProjects(techProjects);
-      console.log("aaaa", techProjects[0]);
     }
   }, [data]);
 
@@ -69,12 +62,10 @@ export default function arts() {
               title={item.title}
               className="glightbox preview-link"
             />
-            <button
-              className="details-link"
-              onClick={() => handleDetailsClick(category, index)}
-            >
+            <a href={item.detailsUrl} className="details-link">
               <i className="bi bi-link-45deg" />
-            </button>
+            </a>
+            <button>Join</button>
           </div>
           <div className="user_information">
             <progress
@@ -178,9 +169,16 @@ export default function arts() {
                   />
                   <p />
                   <p className="py-3"></p>
-                  <Link onClick={() => handleDetailsClick(projects[0], index)}>
-                    <h5>xem chi tiết</h5>
-                  </Link>
+                  <p
+                    onClick={() =>
+                      handleDetailsClick(
+                        projects[0],
+                        findProjectIndex(projects[0])
+                      )
+                    }
+                  >
+                    <h5 style={{ cursor: "pointer" }}>xem chi tiết</h5>
+                  </p>
                   <p />
                 </div>
               </div>

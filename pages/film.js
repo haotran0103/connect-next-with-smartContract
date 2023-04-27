@@ -172,9 +172,9 @@ export default function arts() {
                   />
                   <p />
                   <p className="py-3"></p>
-                  <Link onClick={() => handleDetailsClick(projects[0], index)}>
-                    <h5>xem chi tiết</h5>
-                  </Link>
+                  <p onClick={() => handleDetailsClick(projects[0], index)}>
+                    <h5 style={{ cursor: "pointer" }}>xem chi tiết</h5>
+                  </p>
                   <p />
                 </div>
               </div>

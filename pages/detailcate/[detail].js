@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { format } from "date-fns";
 import { ethers } from "ethers";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Web3 from "web3";
 import { BigNumber } from "ethers";
 import {
@@ -14,49 +14,30 @@ import {
   useMetamask,
   useContractWrite,
 } from "@thirdweb-dev/react";
+
 const DetailProject = () => {
   const router = useRouter();
-  const {
-    pId,
-    title,
-    description,
-    owner,
-    loiHua,
-    keHoach,
-    theLoai,
-    target,
-    deadline,
-    amountCollected,
-    image,
-    viddeo,
-    donators,
-    donations,
-  } = router.query;
+  const { project } = router.query;
   const connect = useMetamask();
   const address = useAddress();
   const [isMounted, setIsMounted] = useState(false);
   const [amounts, setAmounts] = useState("");
   const [isLoading1, setIsLoading] = useState(false);
+  const { category, pId } = router.query;
+  console.log("â", project);
   const { contract } = useContract(
     "0x82FDF3e77da5317cC6F797921DE147114F16bebc"
   );
-  const donationsArray = Array.of(donations);
-  const totalDonations = donationsArray.reduce(
-    (acc, cur) => acc.add(cur),
-    ethers.BigNumber.from("0")
-  );
-
-  const { mutateAsync: donateToproject, isLoading } = useContractWrite(
+  const { mutateAsync: donateToProject } = useContractWrite(
     contract,
-    "donateToproject"
+    "donateToProject"
   );
 
   const handleSubmit = async (pId, amounts) => {
     const a = ethers.utils.parseEther(amounts);
     console.log(a);
     try {
-      const data = await donateToproject({
-        args: [pId],
+      const data = await donateToProject(pId, {
         value: a,
       });
       console.log("Contract call success", data);
@@ -64,19 +45,20 @@ const DetailProject = () => {
       console.log("Contract call failure", err);
     }
   };
+
   const handleDonate = async (pId, amounts) => {
     console.log(pId, amounts);
     setIsLoading(true);
-    const data = await contract.call("donateToproject", pId, {
+    const data = await contract.call("donateToProject", pId, {
       value: ethers.utils.parseEther(amounts),
     });
-
     setIsLoading(false);
   };
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
   if (!isMounted) {
     return null;
   }
@@ -88,7 +70,7 @@ const DetailProject = () => {
           <div className="row d-flex justify-content-center">
             <div className="col-lg-6 text-center">
               <h2>Chi Tiết Dự Án</h2>
-              <h4>{title}</h4>
+              <h4>{category[1]}</h4>
             </div>
           </div>
         </div>
@@ -105,7 +87,7 @@ const DetailProject = () => {
                   style={{ height: "100vh", width: "100vw" }}
                 >
                   <ReactPlayer
-                    url={viddeo}
+                    url={category[10]}
                     controls={true}
                     width="100%"
                     height="100%"
@@ -117,10 +99,10 @@ const DetailProject = () => {
           <div className="row justify-content-between gy-4 mt-4">
             <div className="col-lg-8">
               <div className="portfolio-description">
-                <h2>{title}</h2>
+                <h2>{category[1]}</h2>
                 <p>
                   Mô tả:{" "}
-                  <div dangerouslySetInnerHTML={{ __html: description }} />
+                  <div dangerouslySetInnerHTML={{ __html: category[2] }} />
                 </p>
                 <div className="testimonial-item">
                   <p>
@@ -128,20 +110,20 @@ const DetailProject = () => {
                       style={{ maxHeight: "80%", maxWidth: "80%" }}
                       className="bi bi-quote quote-icon-left"
                     />
-                    <div dangerouslySetInnerHTML={{ __html: loiHua }} />
+                    <div dangerouslySetInnerHTML={{ __html: category[3] }} />
                     <i
                       style={{ maxHeight: "80%", maxWidth: "80%" }}
                       className="bi bi-quote quote-icon-right"
                     />
                   </p>
                   <div>
-                    <img src={image} className="testimonial-img" alt="" />
-                    <h3>mã ví : {owner}</h3>
+                    <img src={category[9]} className="testimonial-img" alt="" />
+                    <h3>mã ví : {category[0]}</h3>
                   </div>
                 </div>
                 <p>
                   Kế hoạch sử dụng tiền kêu gọi:{" "}
-                  <div dangerouslySetInnerHTML={{ __html: keHoach }} />
+                  <div dangerouslySetInnerHTML={{ __html: category[4] }} />
                 </p>
               </div>
             </div>
@@ -150,27 +132,26 @@ const DetailProject = () => {
                 <h3>Thông tin dự án</h3>
                 <ul>
                   <li>
-                    <strong>Loại dự án</strong> <span>{theLoai}</span>
+                    <strong>Loại dự án</strong> <span>{category[5]}</span>
                   </li>
                   <li>
-                    <strong>Số tiền huy động</strong> <span>{target}</span>
+                    <strong>Số tiền huy động</strong>{" "}
+                    <span>{category.target}</span>
                   </li>
                   <li>
                     <strong>Số tiền đã huy động</strong>{" "}
-                    <span>
-                      {donations
-                        .reduce(
-                          (acc, cur) => acc.add(cur),
-                          ethers.BigNumber.from("0")
-                        )
-                        .toString()}
-                    </span>
+                    <span>{category.amountCollected}</span>
                   </li>
                   <li>
-                    <strong>Số người đóng góp</strong> <span>{donators}</span>
+                    <strong>Số người đóng góp</strong>{" "}
+                    <span>{category.donators}</span>
                   </li>
                   <li>
-                    <strong>Số ngày còn lại</strong> {deadline} Ngày
+                    <strong>Số ngày còn lại</strong>{" "}
+                    {Math.floor(
+                      (category[6] - Date.now()) / (1000 * 60 * 60 * 24)
+                    )}{" "}
+                    Ngày
                   </li>
                   <li>
                     <div className="form-outline mb-4">

@@ -56,7 +56,7 @@ export default function arts() {
       <div className="col-xl-4 col-lg-4 col-md-6" key={item.id}>
         <div className="gallery-item h-100">
           <img
-            src={item.anhBia}
+            src={item.image}
             className="img-fluid"
             alt={item.title}
             style={{ width: 407, height: 432, objectFit: "cover" }}
@@ -108,7 +108,7 @@ export default function arts() {
                   hàng những trải nghiệm tuyệt vời và đáp ứng mọi nhu cầu của
                   họ.
                 </p>
-                <Link className="cta-btn" href="/create-project">
+                <Link className="cta-btn" href="/createProject">
                   bắt đầu dự án đầu tiên
                 </Link>
               </div>
@@ -174,9 +174,9 @@ export default function arts() {
                   />
                   <p />
                   <p className="py-3"></p>
-                  <Link onClick={() => handleDetailsClick(projects[0], index)}>
-                    <h5>xem chi tiết</h5>
-                  </Link>
+                  <p onClick={() => handleDetailsClick(projects[0], index)}>
+                    <h5 style={{ cursor: "pointer" }}>xem chi tiết</h5>
+                  </p>
                   <p />
                 </div>
               </div>

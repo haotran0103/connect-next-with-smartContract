@@ -4,10 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import Web3 from "web3";
 import moment from "moment";
-import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/Progress_bar";
+const BigNumber = require("bignumber.js");
+import { ethers } from "ethers";
 import {
   useContractRead,
   useContract,
@@ -137,17 +138,22 @@ export default function Home() {
                         <ProgressBar
                           bgcolor="orange"
                           progress={Math.floor(
-                            (category.donations.reduce(
-                              (a, b) =>
-                                a +
-                                b,
-                              0
+                            (parseFloat(
+                              category.donations
+                                .reduce(
+                                  (acc, cur) => acc.add(cur.toString()),
+                                  ethers.BigNumber.from("0")
+                                )
+                                .toString()
                             ) /
-                              category.target) *
+                              parseFloat(
+                                ethers.utils.formatEther(category.target)
+                              )) *
                               100
                           )}
                           height={20}
                         />
+
                         <p>Tên dự án : {category.title}</p>
                         <p>Số người đã ủng hộ: {category.donators.length}</p>
                         <p>
