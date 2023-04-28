@@ -40,12 +40,6 @@ const DetailProject = () => {
   const { contract } = useContract(
     "0x82FDF3e77da5317cC6F797921DE147114F16bebc"
   );
-  const donationsArray = Array.of(donations);
-  const totalDonations = donationsArray
-    .map((donation) => donation.toString())
-    .reduce((acc, cur) => acc + cur, "0");
-  const progressPercentage = parseFloat(totalDonations).toFixed(3);
-
   const { mutateAsync: donateToproject, isLoading } = useContractWrite(
     contract,
     "donateToproject"
@@ -157,7 +151,7 @@ const DetailProject = () => {
                   </li>
                   <li>
                     <strong>Số tiền đã huy động</strong>{" "}
-                    <span>{progressPercentage}</span>
+                    <span>{donations}</span>
                   </li>
                   <li>
                     <strong>Số người đóng góp</strong> <span>{donators}</span>
